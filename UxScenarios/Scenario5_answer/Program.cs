@@ -3,7 +3,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Text.Json;   // 1a) Find and add new namespace
+using System.Text.Json;
 
 namespace Scenario5
 {
@@ -55,11 +55,11 @@ namespace Scenario5
         {
             byte[] utf8Json = Encoding.UTF8.GetBytes(jsonString);
 
-            // 1a) Find the right reader type and API overload to call, with the correct signature and reader options
+            // 1a) Find the right reader API overload to call, with the correct signature and reader options
             var state = new JsonReaderState(options: new JsonReaderOptions { CommentHandling = JsonCommentHandling.Skip });
             var reader = new Utf8JsonReader(utf8Json, isFinalBlock: true, state);
 
-            // 1b) Find the right writer type and API overload to call, with the correct signature and writer options
+            // 1b) Find the right writer API overload to call, with the correct signature and writer options
             var output = new ArrayBufferWriter<byte>();
             var options = new JsonWriterOptions { Indented = true };
 

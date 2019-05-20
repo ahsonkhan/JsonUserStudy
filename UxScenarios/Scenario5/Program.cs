@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Text.Json;
 
 namespace Scenario5
 {
@@ -24,6 +25,8 @@ namespace Scenario5
         private static string ReadAndWriteIndented(string jsonString)
         {
             byte[] utf8Json = Encoding.UTF8.GetBytes(jsonString);
+
+            // <Add code here using System.Text.Json.Utf8JsonReader, JsonReaderState, JsonReaderOptions, Utf8JsonWriter, and JsonWriterOptions>
 
             string indentedJson = "";
             return indentedJson;
