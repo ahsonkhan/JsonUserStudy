@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Scenario2
 {
@@ -14,9 +15,11 @@ namespace Scenario2
         }
 
         // TODO:
-        // 1) Deserialize the json string into an "account" object and return it.
+        // 1) Use JsonSerializer to deserialize the json string into an "account" object and return it.
+        // Note: You can use JsonSerializerOptions to allow reading JSON with trailing commas.
         private static Account Deserialize(string jsonString)
         {
+            // <Add/modify code here using System.Text.Json.Serialization.JsonSerializer and JsonSerializerOptions>
             return null;
         }
 

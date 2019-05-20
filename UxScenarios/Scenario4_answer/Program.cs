@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Text.Json;   // 1a) Find and add new namespace
+using System.Text.Json;
 
 namespace Scenario4
 {
@@ -13,42 +13,43 @@ namespace Scenario4
 
             (string className, double average) = AverageGrades(jsonString);
             Console.WriteLine(className + " : " + average);
-            // 1g) Expected output:
+            // 1f) Expected output:
             // Science : 81.92
         }
 
         // TODO:
-        // 1) Parse the json string (which contains trailing commas) and query it.
+        // 1) Use the JsonDocument to parse the json string (which contains trailing commas) into a document object model (DOM) and query it.
         // The goal is to return the class average for all the students, along with the class name. If a student's grade is missing, assume 70.
         // Note: Feel free to open input.json to view its contents, but do NOT modify it.
         // Note: Assume the JSON schema is valid and will not change.
+        // Note: You can use JsonReaderOptions to allow reading trailing commas.
         private static (string, double) AverageGrades(string jsonString)
         {
             string className = "";
             double sum = 0;
             int count = 0;
 
-            // 1b) Find the right type and API overload to call, with the correct signature and reader options.
+            // 1a) Find the right API overload to call, with the correct signature and reader options.
             using (JsonDocument document = JsonDocument.Parse(jsonString, new JsonReaderOptions { AllowTrailingCommas = true } ))
             {
                 JsonElement root = document.RootElement;
 
-                // 1c) Query the document to find the class name element and call GetString() to retrieve its name.
+                // 1b) Query the document to find the class name element and call GetString() to retrieve its name.
                 JsonElement classElement = root.GetProperty("Class Name");
                 className = classElement.GetString();
 
-                // 1d) Query the document to find the list of students and enumerate the list using the EnumerateArray().
+                // 1c) Query the document to find the list of students and enumerate the list using the EnumerateArray().
                 JsonElement studentsElement = root.GetProperty("Students");
                 foreach(JsonElement student in studentsElement.EnumerateArray())
                 {
-                    // 1e) Query each student for their grade, retrieve the value by calling GetDouble(), and keep track of the sum and student count.
+                    // 1d) Query each student for their grade, retrieve the value by calling GetDouble(), and keep track of the sum and student count.
                     if (student.TryGetProperty("Grade", out JsonElement gradeElement))
                     {
                         sum += gradeElement.GetDouble();
                     }
                     else
                     {
-                        // 1f) Make sure to add 70 if "Grade" is not found (i.e. when TryGetProperty(() returns false)
+                        // 1e) Make sure to add 70 if "Grade" is not found (i.e. when TryGetProperty(() returns false)
                         sum += 70;
                     }
                     count++;

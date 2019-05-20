@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Scenario1
 {
@@ -13,10 +14,11 @@ namespace Scenario1
         }
 
         // TODO:
-        // 1) Serialize the "account" object to a JSON string and return it.
-        // 2) Then, modify the code to "pretty-print" the JSON so it is indented.
+        // 1) Use JsonSerializer to serialize the "account" object to a JSON string and return it.
+        // 2) Then, modify the code to "pretty-print" the JSON so it is indented, using JsonSerializerOptions.
         private static string Serialize(Account account)
         {
+            // <Add/modify code here using System.Text.Json.Serialization.JsonSerializer and JsonSerializerOptions>
             return "";
         }
 

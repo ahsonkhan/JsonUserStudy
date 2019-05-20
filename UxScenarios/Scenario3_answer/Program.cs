@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using System.Text.Json.Serialization;   // 1a) Find and add new namespace
+using System.Text.Json.Serialization;
 
 namespace Scenario3
 {
@@ -32,24 +32,25 @@ namespace Scenario3
         }
 
         // TODO:
-        // 1) Deserialize the json string from the file into an "account" object and return it.
+        // 1) Use JsonSerializer to deserialize the json string from the file, asynchronously, into an "account" object and return it.
         // Note: Feel free to open input.json to view its contents, but do NOT modify it.
         private static async Task<Account> Deserialize(Stream fileStream)
         {
-            // 1b) Find the right type and async API overload to call, with the correct signature
+            // 1a) Find the right async API overload to call, with the correct signature
             Account account = await JsonSerializer.ReadAsync<Account>(fileStream);
             return account;
         }
 
         // TODO:
-        // 2) Serialize the "account" object to a new file, indented, without null values.
+        // 2) Use JsonSerializer to serialize the "account" object to a new file, asynchronously.
+        // Note: Use JsonSerializerOptions to write the JSON indented and without null values.
         private static async Task Serialize(Account account, Stream fileStream)
         {
-            // 2a) Find the right type and async API overload to call, with the correct signature
+            // 2a) Find the right async API overload to call, with the correct signature
             // await JsonSerializer.WriteAsync<Account>(account, fileStream);
 
             // 2b) Open output.json and realize the contents are not indented, and there are still null values.
-            // 2c) Find the serializer options and the flag that would let you write indented and ignore null values
+            // 2c) Find the serializer options and the flag that would let you write indented and ignore null values.
             var options = new JsonSerializerOptions();
                 options.WriteIndented = true;
                 options.IgnoreNullValues = true;
@@ -58,7 +59,7 @@ namespace Scenario3
         }
     }
 
-    // Note: You CANNOT change the property names themselves, but can add attributes.
+    // Note: You CANNOT change the property names on the Account class, but you can add attributes such as JsonPropertyName.
     public class Account
     {
         // 2d) Observe that the "Email" property is not being set because the payload contains the property name with a hyphen (i.e. "E-mail")
