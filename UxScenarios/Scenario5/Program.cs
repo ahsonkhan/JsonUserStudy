@@ -15,21 +15,21 @@ namespace Scenario5
             string outputFile = "output.json";
             string jsonString = File.ReadAllText(inputFile);
 
-            string indentedJson = ReadAndWriteIndented(jsonString);
-            File.WriteAllText(outputFile, indentedJson);
+            using (FileStream fs = File.Create(outputFile))
+            {
+                ReadAndWriteIndented(jsonString, fs);
+            }
         }
 
         // TODO:
-        // 1) Read the json string (which contains comments that should be ignored) and re-write it as properly formatted/indented (i.e. pretty printed).
+        // 1) Use the JsonDocument to parse the json string (which contains comments that should be ignored) and 
+        //    re-write it to the file stream as properly formatted/indented (i.e. pretty printed) using the Utf8JsonWriter.
         // Note: Feel free to open input.json to view its contents, but do NOT modify it.
-        private static string ReadAndWriteIndented(string jsonString)
+        // Note: Assume the JSON schema is valid and will not change.
+        // Note: You can use JsonWriterOptions to indent and JsonReaderOptions to skip comments.
+        private static void ParseAndWriteIndented(string jsonString, Stream fileStream)
         {
-            byte[] utf8Json = Encoding.UTF8.GetBytes(jsonString);
-
-            // <Add code here using System.Text.Json.Utf8JsonReader, JsonReaderState, JsonReaderOptions, Utf8JsonWriter, and JsonWriterOptions>
-
-            string indentedJson = "";
-            return indentedJson;
+            // <Add code here using System.Text.Json.JsonDocument, JsonReaderOptions, Utf8JsonWriter, and JsonWriterOptions>
         }
     }
 }

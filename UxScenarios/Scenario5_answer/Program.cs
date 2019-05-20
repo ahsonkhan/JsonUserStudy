@@ -15,8 +15,10 @@ namespace Scenario5
             string outputFile = "output.json";
             string jsonString = File.ReadAllText(inputFile);
 
-            string indentedJson = ReadAndWriteIndented(jsonString);
-            File.WriteAllText(outputFile, indentedJson);
+            using (FileStream fs = File.Create(outputFile))
+            {
+                ParseAndWriteIndented(jsonString, fs);
+            }
             // 1h) Expected output.json file:
             // {
             //     "Class Name": "Science",
@@ -49,130 +51,36 @@ namespace Scenario5
         }
 
         // TODO:
-        // 1) Read the json string (which contains comments that should be ignored) and re-write it as properly formatted/indented (i.e. pretty printed).
+        // 1) Use the JsonDocument to parse the json string (which contains comments that should be ignored) and 
+        //    re-write it to the file stream as properly formatted/indented (i.e. pretty printed) using the Utf8JsonWriter.
         // Note: Feel free to open input.json to view its contents, but do NOT modify it.
-        private static string ReadAndWriteIndented(string jsonString)
+        // Note: Assume the JSON schema is valid and will not change.
+        // Note: You can use JsonWriterOptions to indent and JsonReaderOptions to skip comments.
+        private static void ParseAndWriteIndented(string jsonString, Stream fileStream)
         {
-            byte[] utf8Json = Encoding.UTF8.GetBytes(jsonString);
-
-            // 1a) Find the right reader API overload to call, with the correct signature and reader options
-            var state = new JsonReaderState(options: new JsonReaderOptions { CommentHandling = JsonCommentHandling.Skip });
-            var reader = new Utf8JsonReader(utf8Json, isFinalBlock: true, state);
-
-            // 1b) Find the right writer API overload to call, with the correct signature and writer options
-            var output = new ArrayBufferWriter<byte>();
-            var options = new JsonWriterOptions { Indented = true };
-
-            using (var writer = new Utf8JsonWriter(output, options))
+            using (var writer = new Utf8JsonWriter(fileStream, options: new JsonWriterOptions { Indented = true }))
+            using (JsonDocument document = JsonDocument.Parse(jsonString, new JsonReaderOptions { CommentHandling = JsonCommentHandling.Skip } ))
             {
-                string property = null;
+                JsonElement root = document.RootElement;
 
-                // 1c) Create a reader loop to read through each JSON token
-                while (reader.Read())
+                if (root.Type == JsonValueType.Object)
                 {
-                    // 1d) Create a switch over the JsonTokenType
-                    switch (reader.TokenType)
-                    {
-                        // 1e) Call the right reader APIs to get strings, doubles, booleans, etc.
-                        // 1e) Call the right reader APIs to write the different JSON tokens.
-                        case JsonTokenType.PropertyName:
-                            property = reader.GetString();
-                            break;
-                        case JsonTokenType.EndArray:
-                            Debug.Assert(property == null);
-                            writer.WriteEndArray();
-                            break;
-                        case JsonTokenType.EndObject:
-                            Debug.Assert(property == null);
-                            writer.WriteEndObject();
-                            break;
-                        case JsonTokenType.StartArray:
-                            // 1f) Make sure to store the property name to be able to call the right API when the loop reaches the "value" tokens
-                            if (property == null)
-                            {
-                                writer.WriteStartArray();
-                            }
-                            else
-                            {
-                                writer.WriteStartArray(property);
-                                property = null;
-                            }
-                            break;
-                        case JsonTokenType.StartObject:
-                            if (property == null)
-                            {
-                                writer.WriteStartObject();
-                            }
-                            else
-                            {
-                                writer.WriteStartObject(property);
-                                property = null;
-                            }
-                            break;
-                        case JsonTokenType.Number:
-                            double doubleValue = reader.GetDouble();
-                            if (property == null)
-                            {
-                                writer.WriteNumberValue(doubleValue);
-                            }
-                            else
-                            {
-                                writer.WriteNumber(property, doubleValue);
-                                property = null;
-                            }
-                            break;
-                        case JsonTokenType.String:
-                            string stringValue = reader.GetString();
-                            if (property == null)
-                            {
-                                writer.WriteStringValue(stringValue);
-                            }
-                            else
-                            {
-                                writer.WriteString(property, stringValue);
-                                property = null;
-                            }
-                            break;
-                        case JsonTokenType.True:
-                            if (property == null)
-                            {
-                                writer.WriteBooleanValue(true);
-                            }
-                            else
-                            {
-                                writer.WriteBoolean(property, true);
-                                property = null;
-                            }     
-                            break;
-                        case JsonTokenType.False:
-                            if (property == null)
-                            {
-                                writer.WriteBooleanValue(false);
-                            }
-                            else
-                            {
-                                writer.WriteBoolean(property, false);
-                                property = null;
-                            }
-                            break;
-                        case JsonTokenType.Null:
-                            if (property == null)
-                            {
-                                writer.WriteNullValue();
-                            }
-                            else
-                            {
-                                writer.WriteNull(property);
-                                property = null;
-                            }
-                            break;
-                    }
+                    writer.WriteStartObject();
                 }
-            }
+                else
+                {
+                    return;
+                }
 
-            // 1g) Dispose (and/or flush) the writer, get the written UTF-8 data, and transcode to UTF-16 string
-            string indentedJson = Encoding.UTF8.GetString(output.WrittenMemory.Span);
-            return indentedJson;
+                foreach (JsonProperty property in root.EnumerateObject())
+                {
+                    string propertyName = property.Name;
+                    JsonElement value = property.Value;
+                    value.WriteAsProperty(propertyName, writer);
+                }
+
+                writer.WriteEndObject();
+            }
         }
     }
 }
