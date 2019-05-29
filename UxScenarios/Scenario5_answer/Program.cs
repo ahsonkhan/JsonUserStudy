@@ -19,7 +19,7 @@ namespace Scenario5
             {
                 ParseAndWriteIndented(jsonString, fs);
             }
-            // 1h) Expected output.json file:
+            // 1g) Expected output.json file:
             // {
             //     "Class Name": "Science",
             //     "Teacher\u0027s Name": "Jane",
