@@ -17,7 +17,7 @@ namespace Scenario5
 
             using (FileStream fs = File.Create(outputFile))
             {
-                ReadAndWriteIndented(jsonString, fs);
+                ParseAndWriteIndented(jsonString, fs);
             }
         }
 
@@ -29,7 +29,7 @@ namespace Scenario5
         // Note: You can use JsonWriterOptions to indent and JsonReaderOptions to skip comments.
         private static void ParseAndWriteIndented(string jsonString, Stream fileStream)
         {
-            // <Add code here using System.Text.Json.JsonDocument, JsonReaderOptions, Utf8JsonWriter, and JsonWriterOptions>
+            // <Add code here using System.Text.Json.Utf8JsonWriter, JsonWriterOptions, JsonDocument, JsonElement, JsonProperty, and JsonReaderOptions>
         }
     }
 }
