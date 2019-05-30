@@ -14,6 +14,7 @@ namespace Scenario1
             // 1b) Expected output:
             // {"Email":"james@example.com","Active":true,"CreatedDate":"2013-01-20T00:00:00.0000000Z","Roles":["User","Admin"]}
 
+            Console.WriteLine(SerializePrettyPrint(account));
             // 2c) Expected output:
             // {
             //     "Email": "james@example.com",
@@ -26,15 +27,17 @@ namespace Scenario1
             // }
         }
 
-        // TODO:
-        // 1) Use JsonSerializer to serialize the "account" object to a JSON string and return it.
-        // 2) Then, modify the code to "pretty-print" the JSON so it is indented, using JsonSerializerOptions.
+        // TODO: 1) Use JsonSerializer to serialize the "account" object to a JSON string and return it.
         private static string Serialize(Account account)
         {
             // 1a) Find the right API overload to call, with the correct signature
-            // string jsonString = JsonSerializer.ToString<Account>(account);
-            // return jsonString;
+            string jsonString = JsonSerializer.ToString<Account>(account);
+            return jsonString;
+        }
 
+        // TODO: 2) Use JsonSerializer and JsonSerializerOptions to serialize the "account" object to a "pretty-printed" JSON string and return it.
+        private static string SerializePrettyPrint(Account account)
+        {
             // 2a) Find the serializer options and the flag that would let you write indented
             var options = new JsonSerializerOptions();
             options.WriteIndented = true;
