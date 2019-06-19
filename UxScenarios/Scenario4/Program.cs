@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text.Json;
 
 namespace Scenario4
 {
@@ -11,26 +10,24 @@ namespace Scenario4
             string inputFile = "input.json";
             string jsonString = File.ReadAllText(inputFile);
 
-            (string className, double average) = AverageGrades(jsonString);
-            Console.WriteLine(className + " : " + average);
+            double average = AverageGrades(jsonString);
+            Console.WriteLine($"Science : {average}");
         }
 
         // TODO:
-        // 1) Use the JsonDocument to parse the json string (which contains trailing commas) into a document object model (DOM) and query it.
-        // The goal is to return the class average for all the students, along with the class name. If a student's grade is missing, assume 70.
+        // 1) Create a document object model (DOM) view of the json string and use it to calculate and 
+        // return the Science class average of all the students' grades. If a student's grade is missing, assume it is 70.
         // Note: Feel free to open input.json to view its contents, but do NOT modify it.
         // Note: Assume the JSON schema is valid and will not change.
-        // Note: You can use JsonReaderOptions to allow reading trailing commas.
-        private static (string, double) AverageGrades(string jsonString)
+        private static double AverageGrades(string jsonString)
         {
-            string className = "";
             double sum = 0;
             int count = 0;
 
-            // <Add code here using System.Text.Json.JsonDocument, JsonElement, and JsonReaderOptions>
+            // <Add code here>
 
             double average = sum / count;
-            return (className, average);
+            return average;
         }
     }
 }

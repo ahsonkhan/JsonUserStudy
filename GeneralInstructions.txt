@@ -1,0 +1,10 @@
+Please start with Scenario 1 and work your way through to Scenario 5.
+
+You are allowed to look at any of the cs, csproj, and json files within the repo.
+
+Unless otherwise stated, do NOT modify the input.json files or any input JSON strings.
+Unless otherwise stated, feel free to modify the .NET model type if required.
+You should not need to modify any of the project files (i.e. csproj).
+
+Boiler plate code is provided as a starting point to avoid using unrelated APIs so try to leverage what's already there and focus on the task at hand.
+Each scenario has a TODO comment with instructions along with some notes.

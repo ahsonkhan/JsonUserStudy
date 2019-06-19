@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Scenario2
 {
@@ -15,18 +14,16 @@ namespace Scenario2
         }
 
         // TODO:
-        // 1) Use JsonSerializer to deserialize the json string into an "account" object and return it.
-        // Note: You can use JsonSerializerOptions to allow reading JSON with trailing commas.
+        // 1) Deserialize the json string into an "account" object and return it.
         private static Account Deserialize(string jsonString)
         {
-            // <Add/modify code here using System.Text.Json.Serialization.JsonSerializer and JsonSerializerOptions>
+            // <Add/modify code here>
             return null;
         }
 
         private static string GetJsonString()
         {
-            // Note: There is a trailing comma in this JSON which is technically invalid.
-            // Do NOT modify the JSON string.
+            // Note: Do NOT modify the JSON string.
             string json = @"{
                 ""Email"": ""james@example.com"",
                 ""Active"": true,

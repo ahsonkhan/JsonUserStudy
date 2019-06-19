@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Scenario1
 {
@@ -14,22 +13,23 @@ namespace Scenario1
             Console.WriteLine(SerializePrettyPrint(account));
         }
 
-        // TODO: 1) Use JsonSerializer to serialize the "account" object to a JSON string and return it.
+        // TODO: 1) Serialize the "account" object to a JSON string and return it.
         private static string Serialize(Account account)
         {
-            // <Add/modify code here using System.Text.Json.Serialization.JsonSerializer>
+            // <Add/modify code here>
             return "";
         }
 
-        // TODO: 2) Use JsonSerializer and JsonSerializerOptions to serialize the "account" object to a "pretty-printed" JSON string and return it.
+        // TODO: 2) Serialize the "account" object to a "pretty-printed" JSON string and return it.
         private static string SerializePrettyPrint(Account account)
         {
-            // <Add/modify code here using System.Text.Json.Serialization.JsonSerializer and JsonSerializerOptions>
+            // <Add/modify code here>
             return "";
         }
 
         private static Account GetAccount()
         {
+            // Note: Do NOT modify the Account object creation.
             Account account = new Account
             {
                 Email = "james@example.com",

@@ -45,17 +45,15 @@ namespace Scenario5
             //             "Name": "Johnathan"
             //         }
             //     ],
-            //     "Final": true,
-            //     "Student Count": 5
+            //     "Final": true
             // }
         }
 
         // TODO:
-        // 1) Use the JsonDocument to parse the json string (which contains comments that should be ignored) and 
-        //    re-write it to the file stream as properly formatted/indented (i.e. pretty printed) using the Utf8JsonWriter.
+        // 1) Use the JsonDocument to parse the json string and 
+        //    re-write it to the file stream as properly formatted/indented (i.e. pretty printed).
         // Note: Feel free to open input.json to view its contents, but do NOT modify it.
         // Note: Assume the JSON schema is valid and will not change.
-        // Note: You can use JsonWriterOptions to indent and JsonReaderOptions to skip comments.
         private static void ParseAndWriteIndented(string jsonString, Stream fileStream)
         {
             // 1a) Find the right Utf8JsonWriter API overload to call, with the correct signature and writer options.
@@ -82,7 +80,7 @@ namespace Scenario5
                 {
                     string propertyName = property.Name;
                     JsonElement value = property.Value;
-                    value.WriteAsProperty(propertyName, writer);
+                    value.WriteProperty(propertyName, writer);
                 }
 
                 writer.WriteEndObject();
