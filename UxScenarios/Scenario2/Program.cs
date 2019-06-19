@@ -11,6 +11,9 @@ namespace Scenario2
 
             Account account = Deserialize(jsonString);
             Console.WriteLine(account?.Email);
+
+            Console.WriteLine("Press any key to continue ...");
+            Console.ReadLine();
         }
 
         // TODO:

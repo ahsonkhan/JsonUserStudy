@@ -25,6 +25,9 @@ namespace Scenario1
             //         "Admin"
             //     ]
             // }
+
+            Console.WriteLine("Press any key to continue ...");
+            Console.ReadLine();
         }
 
         // TODO: 1) Serialize the "account" object to a JSON string and return it.

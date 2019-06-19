@@ -11,8 +11,8 @@ namespace Scenario5
     {
         static void Main(string[] args)
         {
-            string inputFile = "input.json";
-            string outputFile = "output.json";
+            string inputFile = FindFullPath("input.json");
+            string outputFile = FindFullPath("output.json");
             string jsonString = File.ReadAllText(inputFile);
 
             using (FileStream fs = File.Create(outputFile))
@@ -47,6 +47,9 @@ namespace Scenario5
             //     ],
             //     "Final": true
             // }
+
+            Console.WriteLine("Press any key to continue ...");
+            Console.ReadLine();
         }
 
         // TODO:
@@ -59,7 +62,7 @@ namespace Scenario5
             // 1a) Find the right Utf8JsonWriter API overload to call, with the correct signature and writer options.
             // 1b) Find the right JsonDocument API overload to call, with the correct signature and reader options.
             using (var writer = new Utf8JsonWriter(fileStream, options: new JsonWriterOptions { Indented = true }))
-            using (JsonDocument document = JsonDocument.Parse(jsonString, new JsonReaderOptions { CommentHandling = JsonCommentHandling.Skip } ))
+            using (JsonDocument document = JsonDocument.Parse(jsonString, new JsonReaderOptions { CommentHandling = JsonCommentHandling.Skip }))
             {
                 // 1c) Get the root element and check that the Type matches JsonValueType. Otherwise, throwing or returning is fine.
                 JsonElement root = document.RootElement;
@@ -88,6 +91,35 @@ namespace Scenario5
                 // 1f) Optionally flush the writer, or let the writer.Dispose() auto-flush
                 writer.Flush();
             }
+        }
+
+        private static string FindFullPath(string fileName)
+        {
+            string dir = Directory.GetCurrentDirectory();
+
+            string fullPath = dir + "\\" + fileName;
+
+            int count = 0;
+            while (true)
+            {
+                if (count > 5)
+                {
+                    throw new FileNotFoundException($"The file necessary for this scenario could not be found. Looking for {fileName}.");
+                }
+                if (File.Exists(fullPath))
+                {
+                    break;
+                }
+                dir = Path.GetFullPath(Path.Combine(dir, @"..\"));
+                if (dir.EndsWith("Scenario5\\"))
+                {
+                    throw new FileNotFoundException($"The file necessary for this scenario could not be found (stopped searching at project root). Looking for {fileName}.");
+                }
+                fullPath = dir + "\\" + fileName;
+                count++;
+            }
+
+            return fullPath;
         }
     }
 }

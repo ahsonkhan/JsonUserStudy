@@ -9,19 +9,22 @@ namespace Scenario3
     {
         static async Task Main(string[] args)
         {
-            string inputFile = "input.json";
-            string outputFile = "output.json";
+            string inputFile = FindFullPath("input.json");
+            string outputFile = FindFullPath("output.json");
 
             Account account;
             using (FileStream fs = File.OpenRead(inputFile))
             {
                 account = await Deserialize(fs);
             }
-            
+
             using (FileStream fs = File.Create(outputFile))
             {
                 await Serialize(account, fs);
             }
+
+            Console.WriteLine("Press any key to continue ...");
+            Console.ReadLine();
         }
 
         // TODO:
@@ -39,6 +42,35 @@ namespace Scenario3
         private static async Task Serialize(Account account, Stream fileStream)
         {
             // <Add code here>
+        }
+
+        private static string FindFullPath(string fileName)
+        {
+            string dir = Directory.GetCurrentDirectory();
+
+            string fullPath = dir + "\\" + fileName;
+
+            int count = 0;
+            while (true)
+            {
+                if (count > 5)
+                {
+                    throw new FileNotFoundException($"The file necessary for this scenario could not be found. Looking for {fileName}.");
+                }
+                if (File.Exists(fullPath))
+                {
+                    break;
+                }
+                dir = Path.GetFullPath(Path.Combine(dir, @"..\"));
+                if (dir.EndsWith("Scenario3\\"))
+                {
+                    throw new FileNotFoundException($"The file necessary for this scenario could not be found (stopped searching at project root). Looking for {fileName}.");
+                }
+                fullPath = dir + "\\" + fileName;
+                count++;
+            }
+
+            return fullPath;
         }
     }
 

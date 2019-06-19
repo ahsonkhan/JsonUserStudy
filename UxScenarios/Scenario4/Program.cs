@@ -7,11 +7,14 @@ namespace Scenario4
     {
         static void Main(string[] args)
         {
-            string inputFile = "input.json";
+            string inputFile = FindFullPath("input.json");
             string jsonString = File.ReadAllText(inputFile);
 
             double average = AverageGrades(jsonString);
             Console.WriteLine($"Science : {average}");
+
+            Console.WriteLine("Press any key to continue ...");
+            Console.ReadLine();
         }
 
         // TODO:
@@ -28,6 +31,35 @@ namespace Scenario4
 
             double average = sum / count;
             return average;
+        }
+
+        private static string FindFullPath(string fileName)
+        {
+            string dir = Directory.GetCurrentDirectory();
+
+            string fullPath = dir + "\\" + fileName;
+
+            int count = 0;
+            while (true)
+            {
+                if (count > 5)
+                {
+                    throw new FileNotFoundException($"The file necessary for this scenario could not be found. Looking for {fileName}.");
+                }
+                if (File.Exists(fullPath))
+                {
+                    break;
+                }
+                dir = Path.GetFullPath(Path.Combine(dir, @"..\"));
+                if (dir.EndsWith("Scenario4\\"))
+                {
+                    throw new FileNotFoundException($"The file necessary for this scenario could not be found (stopped searching at project root). Looking for {fileName}.");
+                }
+                fullPath = dir + "\\" + fileName;
+                count++;
+            }
+
+            return fullPath;
         }
     }
 }

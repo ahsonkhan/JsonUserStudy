@@ -11,6 +11,9 @@ namespace Scenario1
 
             Console.WriteLine(Serialize(account));
             Console.WriteLine(SerializePrettyPrint(account));
+
+            Console.WriteLine("Press any key to continue ...");
+            Console.ReadLine();
         }
 
         // TODO: 1) Serialize the "account" object to a JSON string and return it.

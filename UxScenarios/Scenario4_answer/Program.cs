@@ -8,13 +8,16 @@ namespace Scenario4
     {
         static void Main(string[] args)
         {
-            string inputFile = "input.json";
+            string inputFile = FindFullPath("input.json");
             string jsonString = File.ReadAllText(inputFile);
 
             double average = AverageGrades(jsonString);
             Console.WriteLine($"Science : {average}");
             // 1e) Expected output:
             // Science : 81.92
+
+            Console.WriteLine("Press any key to continue ...");
+            Console.ReadLine();
         }
 
         // TODO:
@@ -34,7 +37,7 @@ namespace Scenario4
 
                 // 1b) Query the document to find the list of students and enumerate the list using the EnumerateArray().
                 JsonElement studentsElement = root.GetProperty("Students");
-                foreach(JsonElement student in studentsElement.EnumerateArray())
+                foreach (JsonElement student in studentsElement.EnumerateArray())
                 {
                     // 1c) Query each student for their grade, retrieve the value by calling GetDouble(), and keep track of the sum and student count.
                     if (student.TryGetProperty("Grade", out JsonElement gradeElement))
@@ -69,7 +72,7 @@ namespace Scenario4
                 JsonElement studentsElement = root.GetProperty("Students");
                 count = studentsElement.GetArrayLength();
 
-                foreach(JsonElement student in studentsElement.EnumerateArray())
+                foreach (JsonElement student in studentsElement.EnumerateArray())
                 {
                     if (student.TryGetProperty("Grade", out JsonElement gradeElement))
                     {
@@ -84,6 +87,35 @@ namespace Scenario4
 
             double average = sum / count;
             return average;
+        }
+
+        private static string FindFullPath(string fileName)
+        {
+            string dir = Directory.GetCurrentDirectory();
+
+            string fullPath = dir + "\\" + fileName;
+
+            int count = 0;
+            while (true)
+            {
+                if (count > 5)
+                {
+                    throw new FileNotFoundException($"The file necessary for this scenario could not be found. Looking for {fileName}.");
+                }
+                if (File.Exists(fullPath))
+                {
+                    break;
+                }
+                dir = Path.GetFullPath(Path.Combine(dir, @"..\"));
+                if (dir.EndsWith("Scenario4\\"))
+                {
+                    throw new FileNotFoundException($"The file necessary for this scenario could not be found (stopped searching at project root). Looking for {fileName}.");
+                }
+                fullPath = dir + "\\" + fileName;
+                count++;
+            }
+
+            return fullPath;
         }
     }
 }
