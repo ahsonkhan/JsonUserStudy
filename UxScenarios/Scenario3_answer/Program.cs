@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Scenario3
@@ -10,15 +11,15 @@ namespace Scenario3
     {
         static async Task Main(string[] args)
         {
-            string inputFile = "input.json";
-            string outputFile = "output.json";
+            string inputFile = FindFullPath("input.json");
+            string outputFile = FindFullPath("output.json");
 
             Account account;
             using (FileStream fs = File.OpenRead(inputFile))
             {
                 account = await Deserialize(fs);
             }
-            
+
             using (FileStream fs = File.Create(outputFile))
             {
                 await Serialize(account, fs);
@@ -29,10 +30,13 @@ namespace Scenario3
             //     "Active": true,
             //     "CreatedDate": "2013-01-20T00:00:00Z"
             // }
+
+            Console.WriteLine("Press any key to continue ...");
+            Console.ReadLine();
         }
 
         // TODO:
-        // 1) Use JsonSerializer to deserialize the json string from the file, asynchronously, into an "account" object and return it.
+        // 1) Deserialize the json string from the file, asynchronously, into an "account" object and return it.
         // Note: Feel free to open input.json to view its contents, but do NOT modify it.
         private static async Task<Account> Deserialize(Stream fileStream)
         {
@@ -42,8 +46,8 @@ namespace Scenario3
         }
 
         // TODO:
-        // 2) Use JsonSerializer to serialize the "account" object to a new file, asynchronously.
-        // Note: Use JsonSerializerOptions to write the JSON indented and without null values.
+        // 2) Asynchronously serialize the entire "account" object we deserialized in (1) to a new file but omit any null values.
+        // Note: Write the JSON indented.
         private static async Task Serialize(Account account, Stream fileStream)
         {
             // 2a) Find the right async API overload to call, with the correct signature
@@ -51,15 +55,45 @@ namespace Scenario3
 
             // 2b) Open output.json and realize the contents are not indented, and there are still null values.
             // 2c) Find the serializer options and the flag that would let you write indented and ignore null values.
-            var options = new JsonSerializerOptions();
-                options.WriteIndented = true;
-                options.IgnoreNullValues = true;
-            
-            await JsonSerializer.WriteAsync<Account>(account, fileStream, options);
+            var options = new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+                IgnoreNullValues = true
+            };
+
+            await JsonSerializer.WriteAsync<Account>(fileStream, account, options);
+        }
+
+        private static string FindFullPath(string fileName)
+        {
+            string dir = Directory.GetCurrentDirectory();
+
+            string fullPath = dir + "\\" + fileName;
+
+            int count = 0;
+            while (true)
+            {
+                if (count > 5)
+                {
+                    throw new FileNotFoundException($"The file necessary for this scenario could not be found. Looking for {fileName}.");
+                }
+                if (File.Exists(fullPath))
+                {
+                    break;
+                }
+                dir = Path.GetFullPath(Path.Combine(dir, @"..\"));
+                if (dir.EndsWith("Scenario3\\"))
+                {
+                    throw new FileNotFoundException($"The file necessary for this scenario could not be found (stopped searching at project root). Looking for {fileName}.");
+                }
+                fullPath = dir + "\\" + fileName;
+                count++;
+            }
+
+            return fullPath;
         }
     }
 
-    // Note: You CANNOT change the property names on the Account class, but you can add attributes such as JsonPropertyName.
     public class Account
     {
         // 2d) Observe that the "Email" property is not being set because the payload contains the property name with a hyphen (i.e. "E-mail")

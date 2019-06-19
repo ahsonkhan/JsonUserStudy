@@ -19,9 +19,8 @@
       "Grade": 72.4
     },
     {
-      "Name":"Johnathan",
-    },
+      "Name":"Johnathan"
+    }
   ],
-  "Final": true,
-  "Student Count": 5,
+  "Final": true
 }

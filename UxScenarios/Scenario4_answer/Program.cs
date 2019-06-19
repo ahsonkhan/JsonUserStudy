@@ -8,48 +8,45 @@ namespace Scenario4
     {
         static void Main(string[] args)
         {
-            string inputFile = "input.json";
+            string inputFile = FindFullPath("input.json");
             string jsonString = File.ReadAllText(inputFile);
 
-            (string className, double average) = AverageGrades(jsonString);
-            Console.WriteLine(className + " : " + average);
-            // 1f) Expected output:
+            double average = AverageGrades(jsonString);
+            Console.WriteLine($"Science : {average}");
+            // 1e) Expected output:
             // Science : 81.92
+
+            Console.WriteLine("Press any key to continue ...");
+            Console.ReadLine();
         }
 
         // TODO:
-        // 1) Use the JsonDocument to parse the json string (which contains trailing commas) into a document object model (DOM) and query it.
-        // The goal is to return the class average for all the students, along with the class name. If a student's grade is missing, assume 70.
+        // 1) Create a document object model (DOM) view of the json string and use it to calculate and 
+        // return the Science class average of all the students' grades. If a student's grade is missing, assume it is 70.
         // Note: Feel free to open input.json to view its contents, but do NOT modify it.
         // Note: Assume the JSON schema is valid and will not change.
-        // Note: You can use JsonReaderOptions to allow reading trailing commas.
-        private static (string, double) AverageGrades(string jsonString)
+        private static double AverageGrades(string jsonString)
         {
-            string className = "";
             double sum = 0;
             int count = 0;
 
-            // 1a) Find the right API overload to call, with the correct signature and reader options.
-            using (JsonDocument document = JsonDocument.Parse(jsonString, new JsonReaderOptions { AllowTrailingCommas = true } ))
+            // 1a) Find the right API overload to call, with the correct signature (no reader options are required).
+            using (JsonDocument document = JsonDocument.Parse(jsonString))
             {
                 JsonElement root = document.RootElement;
 
-                // 1b) Query the document to find the class name element and call GetString() to retrieve its name.
-                JsonElement classElement = root.GetProperty("Class Name");
-                className = classElement.GetString();
-
-                // 1c) Query the document to find the list of students and enumerate the list using the EnumerateArray().
+                // 1b) Query the document to find the list of students and enumerate the list using the EnumerateArray().
                 JsonElement studentsElement = root.GetProperty("Students");
-                foreach(JsonElement student in studentsElement.EnumerateArray())
+                foreach (JsonElement student in studentsElement.EnumerateArray())
                 {
-                    // 1d) Query each student for their grade, retrieve the value by calling GetDouble(), and keep track of the sum and student count.
+                    // 1c) Query each student for their grade, retrieve the value by calling GetDouble(), and keep track of the sum and student count.
                     if (student.TryGetProperty("Grade", out JsonElement gradeElement))
                     {
                         sum += gradeElement.GetDouble();
                     }
                     else
                     {
-                        // 1e) Make sure to add 70 if "Grade" is not found (i.e. when TryGetProperty(() returns false)
+                        // 1d) Make sure to add 70 if "Grade" is not found (i.e. when TryGetProperty(() returns false)
                         sum += 70;
                     }
                     count++;
@@ -57,32 +54,25 @@ namespace Scenario4
             }
 
             double average = sum / count;
-            return (className, average);
+            return average;
         }
 
         // There are alternative solutions to this problem.
-        // Instead of keeping track of count while enumerating the "Students" json array, read the "Student Count" property instead.
-        // Another approach would be to use the "GetArrayLength()" method on "studentsElement".
+        // Instead of keeping track of count while enumerating the "Students" json array, use the "GetArrayLength()" method on "studentsElement".
         // The user may also call the Try* variations of the APIs.
-        private static (string, double) AverageGrades_Alternative(string jsonString)
+        private static double AverageGrades_Alternative(string jsonString)
         {
-            string className = "";
             double sum = 0;
             int count = 0;
 
-            using (JsonDocument document = JsonDocument.Parse(jsonString, new JsonReaderOptions { AllowTrailingCommas = true } ))
+            using (JsonDocument document = JsonDocument.Parse(jsonString))
             {
                 JsonElement root = document.RootElement;
-                JsonElement classElement = root.GetProperty("Class Name");
-                className = classElement.GetString();
-
-                JsonElement studentCountElement = root.GetProperty("Student Count");
-                count = studentCountElement.GetInt32();
 
                 JsonElement studentsElement = root.GetProperty("Students");
-                // count = studentsElement.GetArrayLength();
+                count = studentsElement.GetArrayLength();
 
-                foreach(JsonElement student in studentsElement.EnumerateArray())
+                foreach (JsonElement student in studentsElement.EnumerateArray())
                 {
                     if (student.TryGetProperty("Grade", out JsonElement gradeElement))
                     {
@@ -96,7 +86,36 @@ namespace Scenario4
             }
 
             double average = sum / count;
-            return (className, average);
+            return average;
+        }
+
+        private static string FindFullPath(string fileName)
+        {
+            string dir = Directory.GetCurrentDirectory();
+
+            string fullPath = dir + "\\" + fileName;
+
+            int count = 0;
+            while (true)
+            {
+                if (count > 5)
+                {
+                    throw new FileNotFoundException($"The file necessary for this scenario could not be found. Looking for {fileName}.");
+                }
+                if (File.Exists(fullPath))
+                {
+                    break;
+                }
+                dir = Path.GetFullPath(Path.Combine(dir, @"..\"));
+                if (dir.EndsWith("Scenario4\\"))
+                {
+                    throw new FileNotFoundException($"The file necessary for this scenario could not be found (stopped searching at project root). Looking for {fileName}.");
+                }
+                fullPath = dir + "\\" + fileName;
+                count++;
+            }
+
+            return fullPath;
         }
     }
 }
